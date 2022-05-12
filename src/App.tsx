@@ -1,7 +1,26 @@
 import { useState } from 'react';
+import { get } from 'lodash';
 import axios from 'axios';
 import './App.css';
 import { textEllipsis } from './util';
+
+interface User {
+  code: number;
+  qq: string;
+  name: string;
+  qlogo: string;
+  lvzuan: {
+    code: number;
+    subcode: number;
+    level: number;
+    vip: number;
+    score: number;
+    place: number;
+    payway: number;
+    isyear: number;
+    vendor: number;
+  }
+}
 
 const res = {
   "code": 1,
@@ -9,20 +28,21 @@ const res = {
   "name": "ゆ、 音色 Cutey。ゆ、 音色 Cutey。ゆ、 音色 Cutey。",
   "qlogo": "https://static-web.stalar.sg/as/stalar-static/scm/license-demo.png",
   "lvzuan": {
-  "code": 0,
-  "subcode": 0,
-  "level": 7,
-  "vip": 1,
-  "score": 52402,
-  "place": 0,
-  "payway": 0,
-  "isyear": 1,
-  "vendor": 18
+    "code": 0,
+    "subcode": 0,
+    "level": 7,
+    "vip": 1,
+    "score": 52402,
+    "place": 0,
+    "payway": 0,
+    "isyear": 1,
+    "vendor": 18
   }
 }
 
 function App() {
-  const [userInfo, setUserInfo] = useState(res);
+  const [user, setUser] = useState<User>();
+  const [value, setValue] = useState('');
   const doSearch = (qq: string) => {
     if(qq) {
       const url = 'https://api.uomg.com/api/qq.infol'
@@ -33,32 +53,42 @@ function App() {
       }).then(res => {
         // 捕获接口异常
         if (res?.data?.code !== 200) {
-          console.log('res:::', res);
           throw new Error('')
         }
         // 更新并显示消息
       }).catch(e => {
         // toast一个错误消息
       }).finally(() => {
-        setUserInfo(res);
+        setUser(res);
       })
     }
+  }
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValue(e.target.value)
+  }
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    doSearch(value)
+  }
+  const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>)=> {
+   if (e.keyCode === 13) {
+    doSearch(value)
+   }
   }
   return (
       <div className="App">
         <h3>QQ号查询</h3>
-        <div className='Search-box'>
+        <div className="Search-box">
           <span className='title'>QQ</span>
-          <input className='input' type="text" onBlur={(e) => { doSearch(e.target.value) }} onKeyUp={(e)=>{if (e.keyCode === 13) { doSearch(e.target.value) }}} />
+          <input className='input' type="text" onChange={handleChange} onBlur={handleBlur} onKeyUp={handleKeyUp} />
         </div>
-        {userInfo && (
+        {user && (
           <div className='Search-result'>
             <div className='logo'>
-              <img src={userInfo?.qlogo} alt="" />
+              <img src={get(user, 'qlogo')} alt="" />
             </div>
             <div>
-              <div className='name'>{textEllipsis(userInfo?.name)}</div>
-              <div className='qq'>{userInfo?.qq}</div>
+              <div className='name'>{textEllipsis(get(user, 'name'))}</div>
+              <div className='qq'>{get(user, 'qq')}</div>
             </div>
           </div>
         )}
