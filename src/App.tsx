@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { get } from 'lodash';
 import axios from 'axios';
-import './App.css';
+import './App.scss';
 import { textEllipsis } from './util';
 
 interface User {
