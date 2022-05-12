@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { get } from 'lodash';
+import { get, debounce } from 'lodash';
 import axios from 'axios';
 import './App.scss';
 import { textEllipsis } from './util';
@@ -44,11 +44,10 @@ interface User {
 
 function App() {
   const [user, setUser] = useState<User | null>(null);
-  const [value, setValue] = useState('');
   const [error, setError] = useState('')
   const [isLoading, load] = useLoading()
 
-  const doSearch = (qq: string) => {
+  const doSearch = debounce((qq: string) => {
     if(qq) {
       const url = 'https://api.uomg.com/api/qq.info'
       load(
@@ -62,7 +61,7 @@ function App() {
             throw new Error('没有查询结果')
           }
           // 更新并显示消息
-          setUser(res?.data);
+          setUser(res?.data)
           setError('')
         }).catch(e => {
           // toast一个错误消息
@@ -71,37 +70,37 @@ function App() {
         })
       )
     }
-  }
+  }, 200)
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(e.target.value)
-  }
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    doSearch(value)
-  }
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>)=> {
-   if (e.key === 'Enter') {
-    doSearch(value)
-   }
+    const value = e.target.value || ''
+    doSearch(value)  
   }
   return (
-      <div className="App">
+      <div className="app">
         <h3>QQ号查询</h3>
-        <div className="Search-box">
-          <span className='title'>QQ</span>
-          <input disabled={isLoading} className='input' type="text" onChange={handleChange} onBlur={handleBlur} onKeyDown={handleKeyDown} />
-          {isLoading && <LoadingIcon />}
+        <div className="search-box">
+          <div className='title'>QQ</div>
+          <input className='input' type="text" onChange={handleChange} />
         </div>
-        {error && <span className="error">{error}</span>}
-        {user && (
-          <div className='Search-result'>
-            <div className='logo'>
-              <img src={get(user, 'qlogo')} alt="" />
+        {isLoading ? 
+        <div className="loading-box">
+          <LoadingIcon />
+        </div>
+         : (
+          <>
+          {error && <span className="error">{error}</span>}
+          {user && (
+            <div className='search-result'>
+              <div className='logo'>
+                <img src={get(user, 'qlogo')} alt="" />
+              </div>
+              <div>
+                <div className='name'>{textEllipsis(get(user, 'name'))}</div>
+                <div className='qq'>{get(user, 'qq')}</div>
+              </div>
             </div>
-            <div>
-              <div className='name'>{textEllipsis(get(user, 'name'))}</div>
-              <div className='qq'>{get(user, 'qq')}</div>
-            </div>
-          </div>
+          )}
+          </>
         )}
       </div>
   );
