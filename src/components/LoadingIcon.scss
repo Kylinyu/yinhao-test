@@ -1,0 +1,15 @@
+.icon svg {
+  display: inline-block;
+  animation: circle 1s infinite linear;
+  -webkit-animation: circle 1s infinite linear;
+}
+
+@keyframes circle {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+ }
+
