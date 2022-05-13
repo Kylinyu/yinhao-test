@@ -24,24 +24,6 @@ interface User {
   }
 }
 
-// const mockres = {
-//   "code": 1,
-//   "qq": "774740085",
-//   "name": "ゆ、 音色 Cutey。ゆ、 音色 Cutey。ゆ、 音色 Cutey。",
-//   "qlogo": "https://static-web.stalar.sg/as/stalar-static/scm/license-demo.png",
-//   "lvzuan": {
-//     "code": 0,
-//     "subcode": 0,
-//     "level": 7,
-//     "vip": 1,
-//     "score": 52402,
-//     "place": 0,
-//     "payway": 0,
-//     "isyear": 1,
-//     "vendor": 18
-//   }
-// }
-
 let controller: undefined | AbortController
 
 function App() {
@@ -49,7 +31,6 @@ function App() {
   const [value, setValue] = useState('')
   const [error, setError] = useState('')
   const [isLoading, load] = useLoading()
-
 
   const doSearch = debounce((qq: string) => {
     if(qq) {
