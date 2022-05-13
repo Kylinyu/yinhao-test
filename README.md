@@ -16,3 +16,5 @@
 > npm start
 
 ## 效果图
+
+[点击查看演示](https://giphy.com/embed/ce5rjDIjiE9uJ5E3Lh)
