@@ -42,30 +42,33 @@ interface User {
 //   }
 // }
 
+let controller: undefined | AbortController
+
 function App() {
   const [user, setUser] = useState<User | null>(null)
   const [value, setValue] = useState('')
   const [error, setError] = useState('')
   const [isLoading, load] = useLoading()
 
+
   const doSearch = debounce((qq: string) => {
     if(qq) {
-      const url = 'https://api.uomg.com/api/qq.info'
+      const url = '/qq.info'
+      if (controller) {
+        controller.abort()
+      }
+      controller = new AbortController();
       load(
-        axios.get<User>(url, {
+        axios.get(url, {
           params: {
             qq
-          }
-        }).then((res) => {
-          // 捕获接口异常
-          if (res?.data?.code !== 1) {
-            throw new Error('没有查询结果')
-          }
-          // 更新并显示消息
-          setUser(res?.data)
+          },
+          signal: controller.signal,
+        }).then((res: any) => {
+          setUser(res)
           setError('')
-        }).catch(e => {
-          setError(e.message)
+        }).catch(() => {
+          setError('没有查询结果')
           setUser(null)
         })
       )
