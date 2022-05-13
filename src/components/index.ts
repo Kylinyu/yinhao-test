@@ -1,4 +1,7 @@
-import LoadingIcon from "./LoadingIcon";
+import LoadingIcon from './LoadingIcon';
+import InputNumber from './InputNumber';
+
 export {
-  LoadingIcon
+  LoadingIcon,
+  InputNumber
 }

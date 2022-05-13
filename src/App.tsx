@@ -4,7 +4,7 @@ import axios from 'axios';
 import './App.scss';
 import { textEllipsis } from './util';
 import { useLoading } from './hooks';
-import { LoadingIcon } from './components';
+import { LoadingIcon, InputNumber } from './components';
 
 interface User {
   code: number;
@@ -43,7 +43,8 @@ interface User {
 // }
 
 function App() {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(null)
+  const [value, setValue] = useState('')
   const [error, setError] = useState('')
   const [isLoading, load] = useLoading()
 
@@ -64,23 +65,22 @@ function App() {
           setUser(res?.data)
           setError('')
         }).catch(e => {
-          // toast一个错误消息
           setError(e.message)
           setUser(null)
         })
       )
     }
   }, 200)
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value || ''
-    doSearch(value)  
+  const handleChange = (value: string) => {
+    setValue(value)
+    doSearch(value)
   }
   return (
       <div className="app">
         <h3>QQ号查询</h3>
         <div className="search-box">
           <div className='title'>QQ</div>
-          <input className='input' type="text" onChange={handleChange} />
+          <InputNumber value={value} onChange={handleChange} />
         </div>
         {isLoading ? 
         <div className="loading-box">

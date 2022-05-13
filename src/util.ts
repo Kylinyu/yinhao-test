@@ -7,6 +7,12 @@ const textEllipsis = (str: string) => {
   return str
 }
 
+const isNumber = (str: string) => {
+  const regex = /^[0-9]*$/g;
+  return regex.test(`${str}`)
+}
+
 export {
-  textEllipsis
+  textEllipsis,
+  isNumber
 }
